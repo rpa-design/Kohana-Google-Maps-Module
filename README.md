@@ -51,7 +51,6 @@ This is a more advanced example with usage of various options...
 					'content' => '<p>Put HTML here. "Quotes" and \'singlequotes\'</p>',
 					'icon' => '/path/to/your.icon'
 				))
-                        ->add_marker_address('Marker A', "Some street 125, City") // options can be passed as above
 			->set_gmap_size('100%', 500); // Will output "width: 100%; height: 500px"
 
 		// This will render the Google Map.
@@ -66,22 +65,5 @@ This is a more advanced example with usage of various options...
 
 Yes, it's that easy ;)
 
-## Javascript access
-In javascript the gmaps variable is created. It is javascript object. Each map instance is accessible by gmap[instance_name]. 
-
-###Javascript constructor
-function Gmap(options){
-
-        this.options = options;
-        this.polyline_coords = {};
-        this.polylines = {};
-        this.polygons = {};
-        this.polygon_coords = {};
-        this.markers = {};
-        this.info_windows = {};
-        this.geocode_request = {};
-        this.geocode_result = {};
-    };
-
-For example you add a marker  Gmap::factory(array('instance_name'=>'myMap'))->add_marker_address('my_marker','address, city')->render();
-In javascript you will have varible gmaps['myMap']. gmaps['myMap'].map is instance of google.maps.Map.  gmaps['markers']['my_marker'] is instance of google.maps.Marker. In gmaps['myMap'].geocode_result['my_marker'] is result from call geocoder.geocode and vice versa.
+## More!
+For more information look up the wiki!
