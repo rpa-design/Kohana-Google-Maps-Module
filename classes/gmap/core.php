@@ -266,7 +266,87 @@ class Gmap_Core
 
 		return FALSE;
 	} // function
+	
+	/**
+	 * Get georequest from address
+	 *
+	 * @param string Search query (Ex "Leeds, UK")
+	 * @param boolean Decode response in JSON format? (Default TRUE)
+	 * @return object
+	 */
+	public function get_from_address($query, $decode = TRUE)
+	{	
+		return $this->_geo_request($query, NULL, NULL, $decode);
+	}
+	
+	/**
+	 * Get lat lon from address
+	 *
+	 * @param string Search query (Ex "Leeds, UK")
+	 * @param boolean Decode response in JSON format? (Default TRUE)
+	 * @return object
+	 */
+	public function get_latlon_from_address($query, $decode = TRUE)
+	{	
+		$coordinates = array();
+		$geodata = $this->_geo_request($query, NULL, NULL, $decode);
+		$coordinates['latitude'] = $geodata->results[0]->geometry->location->lat;
+		$coordinates['longitude'] = $geodata->results[0]->geometry->location->lng;
+		
+		return $coordinates;
+	}
 
+	/**
+	 * Get a Geocoding Request
+	 *
+	 * @param   string  Address query
+	 * @param   float   Latitude
+	 * @param   float   Longitude	
+	 * @param   boolean Decode response in JSON format? (Default TRUE)     
+	 * @return  mixed
+	 */
+	protected function _geo_request($address = NULL, $lat = NULL, $lon = NULL, $decode = TRUE)
+	{
+		// Format the URL			
+		$url = 'http://maps.googleapis.com/maps/api/geocode/json?sensor=false';
+		
+		// Set language    
+		$url .= '&language='.substr(I18n::lang(), 0, 2);
+				
+		// Set params
+		if (!empty($address))
+		{
+			$url .= '&address='.htmlentities($address);
+		}
+		else if (!empty($lat) && !empty($lon))
+		{
+			$url .= '&lat='.$lat.'&lon='.$lon;
+		}	
+		else
+		{
+			throw new Kohana_Exception('You need add address or coordinates params');
+		}
+		  
+		// Convert spaces
+		$url = str_replace(' ', '+', $url);
+											  
+		// Get the server response
+		$json_response = Request::factory($url)->execute()->body();
+			
+		// Decode response
+		$response = json_decode($json_response);
+        		         
+		// Return error or response  
+		if ($response->status == 'OK')
+		{       
+			return $response;
+		}
+		else
+		{ 
+			return FALSE;
+		}
+	}
+	
 	/**
 	 * Renders the google-map template.
 	 *
